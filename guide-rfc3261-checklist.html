@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-slate-950 text-slate-100">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RFC 3261 Header Checklist for SIP Requests | SIP Log Analyzer</title>
+<meta name="description" content="The mandatory headers every SIP request needs under RFC 3261, and what their absence usually means when debugging a log.">
+<link rel="canonical" href="https://example.com/guide-rfc3261-checklist.html" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📞</text></svg>">
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen flex flex-col">
+<nav class="h-8 shrink-0 bg-slate-950 border-b border-slate-900 flex items-center justify-between px-4 text-[11px] text-slate-400 overflow-x-auto">
+  <a href="index.html" class="font-bold text-indigo-300 shrink-0">SIP Log Analyzer</a>
+  <div class="flex items-center gap-4 shrink-0">
+    <a href="index.html" class="hover:text-slate-200">Tool</a>
+    <a href="guide-sip-basics.html" class="hover:text-slate-200 text-slate-200">Guides</a>
+    <a href="about.html" class="hover:text-slate-200">About</a>
+    <a href="contact.html" class="hover:text-slate-200">Contact</a>
+    <a href="privacy.html" class="hover:text-slate-200">Privacy</a>
+    <a href="terms.html" class="hover:text-slate-200">Terms</a>
+  </div>
+</nav>
+
+<main class="flex-1 max-w-3xl mx-auto px-6 py-14 space-y-6 text-sm text-slate-400 leading-relaxed">
+  <h1 class="text-2xl font-bold text-slate-100 border-b border-slate-800 pb-3">RFC 3261 Header Checklist for SIP Requests</h1>
+
+  <p>RFC 3261 defines a small set of headers that must appear in every SIP request. A missing or malformed header here is one of the most common causes of interoperability failures between different vendors' equipment. This checklist covers the ones worth checking first, which is also what the analyzer's built-in compliance inspector flags automatically.</p>
+
+  <h2 class="text-lg font-bold text-slate-200 pt-2">Mandatory Headers</h2>
+  <ul class="list-disc pl-5 space-y-3">
+    <li><b class="text-slate-200">Via</b> — Records the path a request took so responses can be routed back the same way. Each proxy adds its own Via; a missing branch parameter breaks transaction matching.</li>
+    <li><b class="text-slate-200">To / From</b> — Identify the logical parties in the dialog. The From header must carry a tag; the To tag is added by the callee in the first reliable response, not by the caller.</li>
+    <li><b class="text-slate-200">Call-ID</b> — A globally unique identifier for the dialog, used to group every message belonging to one call.</li>
+    <li><b class="text-slate-200">CSeq</b> — A sequence number plus method name, used to order transactions and match requests to responses.</li>
+    <li><b class="text-slate-200">Max-Forwards</b> — A hop-limit counter (commonly starting at 70) that prevents infinite proxy loops. A request without it risks looping indefinitely on some proxies.</li>
+    <li><b class="text-slate-200">Contact</b> — Required on INVITE and a small set of other requests; tells the far end the direct address to use for subsequent in-dialog requests, bypassing the original proxy chain where allowed.</li>
+  </ul>
+
+  <h2 class="text-lg font-bold text-slate-200 pt-2">Common Findings and What They Usually Mean</h2>
+  <ul class="list-disc pl-5 space-y-3">
+    <li><b class="text-slate-200">Missing Contact on INVITE</b> — often causes mid-call requests (re-INVITE, BYE) to route back through the original proxy path instead of directly, or to fail outright on strict implementations.</li>
+    <li><b class="text-slate-200">Missing or zero Max-Forwards</b> — usually a sign of a non-compliant client library rather than a real routing issue, but worth flagging before it causes a loop in a more complex proxy topology.</li>
+    <li><b class="text-slate-200">No provisional response before the final response</b> — not itself an RFC violation, but on slower networks it often correlates with retransmissions, since the sender has no early confirmation the request was received.</li>
+  </ul>
+
+  <h2 class="text-lg font-bold text-slate-200 pt-2">Using This With the Analyzer</h2>
+  <p>Rather than manually checking each request against this list, the <a href="index.html" class="text-indigo-300 hover:underline">SIP Log Analyzer</a>'s inspector panel runs these checks automatically on every selected message and lists any findings alongside the colorized raw payload. For background on why these particular headers exist, see the <a href="guide-sip-basics.html" class="text-indigo-300 hover:underline">SIP protocol basics guide</a>.</p>
+</main>
+
+<footer class="bg-slate-950 border-t border-slate-800 py-8 px-6 text-center text-xs text-slate-500">
+  <div class="max-w-6xl mx-auto space-y-3">
+    <div class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-slate-400">
+      <a href="index.html" class="hover:text-indigo-300">Tool</a>
+      <a href="about.html" class="hover:text-indigo-300">About</a>
+      <a href="guide-sip-basics.html" class="hover:text-indigo-300">Guides</a>
+      <a href="contact.html" class="hover:text-indigo-300">Contact</a>
+      <a href="privacy.html" class="hover:text-indigo-300">Privacy Policy</a>
+      <a href="terms.html" class="hover:text-indigo-300">Terms of Use</a>
+    </div>
+    <p>© 2026 Universal SIP Log Analyzer. Developed for Telecom Engineering Diagnostics.</p>
+  </div>
+</footer>
+</body>
+</html>

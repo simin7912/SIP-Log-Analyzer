@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-slate-950 text-slate-100">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnosing NAT One-Way Audio in SIP Calls | SIP Log Analyzer</title>
+<meta name="description" content="Why SIP calls connect but one side hears silence, and how to read the SDP media lines that reveal NAT-related one-way audio issues.">
+<link rel="canonical" href="https://example.com/guide-nat-audio.html" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📞</text></svg>">
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen flex flex-col">
+<nav class="h-8 shrink-0 bg-slate-950 border-b border-slate-900 flex items-center justify-between px-4 text-[11px] text-slate-400 overflow-x-auto">
+  <a href="index.html" class="font-bold text-indigo-300 shrink-0">SIP Log Analyzer</a>
+  <div class="flex items-center gap-4 shrink-0">
+    <a href="index.html" class="hover:text-slate-200">Tool</a>
+    <a href="guide-sip-basics.html" class="hover:text-slate-200 text-slate-200">Guides</a>
+    <a href="about.html" class="hover:text-slate-200">About</a>
+    <a href="contact.html" class="hover:text-slate-200">Contact</a>
+    <a href="privacy.html" class="hover:text-slate-200">Privacy</a>
+    <a href="terms.html" class="hover:text-slate-200">Terms</a>
+  </div>
+</nav>
+
+<main class="flex-1 max-w-3xl mx-auto px-6 py-14 space-y-6 text-sm text-slate-400 leading-relaxed">
+  <h1 class="text-2xl font-bold text-slate-100 border-b border-slate-800 pb-3">Diagnosing NAT One-Way Audio in SIP Calls</h1>
+
+  <p>One of the most common — and most confusing — VoIP symptoms is a call that connects cleanly (SIP signaling completes, both phones show "connected") but audio only flows in one direction. This guide explains the usual cause and how to spot it in a log.</p>
+
+  <h2 class="text-lg font-bold text-slate-200 pt-2">Signaling and Media Are Separate Paths</h2>
+  <p>SIP itself only negotiates a call; it does not carry the audio. Once signaling completes, audio flows over a separate protocol, RTP (Real-time Transport Protocol), using IP addresses and ports that were negotiated inside the SDP (Session Description Protocol) body of the INVITE and its response. This separation is exactly why a call can "connect" while audio still fails — the two paths can succeed or fail independently.</p>
+
+  <h2 class="text-lg font-bold text-slate-200 pt-2">The Classic NAT Problem</h2>
+  <p>A phone or softphone sitting behind a NAT router often has no idea what its actual public IP address is. If it advertises its private LAN address in the SDP <code class="text-emerald-300">c=</code> (connection) line and <code class="text-emerald-300">m=audio</code> (media) line, the far end will try to send RTP packets to that private, unroutable address — packets that never arrive. The result: the side behind the misconfigured NAT never hears audio, while the other side (whose media address was advertised correctly) does.</p>
+
+  <h2 class="text-lg font-bold text-slate-200 pt-2">What to Look For in the Log</h2>
+  <ul class="list-disc pl-5 space-y-2">
+    <li>Compare the SDP <code class="text-emerald-300">c=IN IP4</code> address against the actual source IP of the SIP packet (the <code class="text-slate-300">Via</code> header or transport-layer source). A private RFC 1918 address (10.x, 172.16–31.x, 192.168.x) in the SDP when the signaling clearly crossed the public internet is the classic tell.</li>
+    <li>Check whether the <code class="text-emerald-300">m=audio</code> port matches what the far end is actually sending to — a media/RTP capture or the device's own logs will show the port it's transmitting on.</li>
+    <li>Confirm both the offer (in the INVITE) and the answer (in the 200 OK) — a one-way NAT issue can be on either leg of the call.</li>
+  </ul>
+
+  <h2 class="text-lg font-bold text-slate-200 pt-2">Typical Fixes</h2>
+  <p>Common remedies include enabling SIP ALG carefully (it can also cause problems if misconfigured), deploying an SBC or media relay that rewrites SDP to the correct public address, using STUN so the endpoint learns its public IP/port, or forcing symmetric RTP so the media server replies to whatever source port it actually receives traffic from rather than trusting the SDP-advertised port.</p>
+
+  <h2 class="text-lg font-bold text-slate-200 pt-2">Spotting It Faster</h2>
+  <p>When you load a log into the <a href="index.html" class="text-indigo-300 hover:underline">SIP Log Analyzer</a>, each INVITE and 200 OK in the sequence diagram shows its negotiated codec and media port directly on the flow arrow, so a mismatched or private-range media address is visible at a glance without manually digging through the SDP body of every message. For the surrounding signaling headers this depends on, see the <a href="guide-sip-basics.html" class="text-indigo-300 hover:underline">SIP protocol basics guide</a>.</p>
+</main>
+
+<footer class="bg-slate-950 border-t border-slate-800 py-8 px-6 text-center text-xs text-slate-500">
+  <div class="max-w-6xl mx-auto space-y-3">
+    <div class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-slate-400">
+      <a href="index.html" class="hover:text-indigo-300">Tool</a>
+      <a href="about.html" class="hover:text-indigo-300">About</a>
+      <a href="guide-sip-basics.html" class="hover:text-indigo-300">Guides</a>
+      <a href="contact.html" class="hover:text-indigo-300">Contact</a>
+      <a href="privacy.html" class="hover:text-indigo-300">Privacy Policy</a>
+      <a href="terms.html" class="hover:text-indigo-300">Terms of Use</a>
+    </div>
+    <p>© 2026 Universal SIP Log Analyzer. Developed for Telecom Engineering Diagnostics.</p>
+  </div>
+</footer>
+</body>
+</html>
