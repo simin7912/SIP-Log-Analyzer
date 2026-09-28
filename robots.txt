@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://simin7912.github.io/SIP-Log-Analyzer/sitemap.xml
+Sitemap: https://simin7912.github.io/sitemap.xml
