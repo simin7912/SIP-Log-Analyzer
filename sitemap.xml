@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://simin7912.github.io/SIP-Log-Analyzer/index.html</loc></url>
-  <url><loc>https://simin7912.github.io/SIP-Log-Analyzer/about.html</loc></url>
-  <url><loc>https://simin7912.github.io/SIP-Log-Analyzer/contact.html</loc></url>
-  <url><loc>https://simin7912.github.io/SIP-Log-Analyzer/privacy.html</loc></url>
-  <url><loc>https://simin7912.github.io/SIP-Log-Analyzer/terms.html</loc></url>
-  <url><loc>https://simin7912.github.io/SIP-Log-Analyzer/guide-sip-basics.html</loc></url>
-  <url><loc>https://simin7912.github.io/SIP-Log-Analyzer/guide-nat-audio.html</loc></url>
-  <url><loc>https://simin7912.github.io/SIP-Log-Analyzer/guide-rfc3261-checklist.html</loc></url>
+  <url><loc>https://simin7912.github.io/index.html</loc></url>
+  <url><loc>https://simin7912.github.io/about.html</loc></url>
+  <url><loc>https://simin7912.github.io/contact.html</loc></url>
+  <url><loc>https://simin7912.github.io/privacy.html</loc></url>
+  <url><loc>https://simin7912.github.io/terms.html</loc></url>
+  <url><loc>https://simin7912.github.io/guide-sip-basics.html</loc></url>
+  <url><loc>https://simin7912.github.io/guide-nat-audio.html</loc></url>
+  <url><loc>https://simin7912.github.io/guide-rfc3261-checklist.html</loc></url>
 </urlset>
